@@ -8,12 +8,11 @@ def compute(n_tasks, max_util, times):
 
     for i in range (0, times):
 
-        periods  = np.random.randint(50, 1000, n_tasks);
-        K = 3   # Number of crit_levels
-        perc_WCET = [1, 2, 3]
+        periods  = np.random.randint(50, 1000, n_tasks)
+        K = 4   # Number of crit_levels
+        perc_WCET = [1, 2, 2, 3]
 
         task_crit_levels = np.random.randint(1, K+1, n_tasks)
-        task_crit_levels = [ max(x,1) for x in task_crit_levels ]
 
         U = []
 

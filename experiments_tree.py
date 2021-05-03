@@ -22,8 +22,8 @@ def prepare(id_run, n_tasks, max_util, times, p_fault):
         crit_lvl_prob = [1e-3, 1e-7, 1e-9]
         perc_WCET = [1, 2, 3]
 
-        task_crit_levels = np.random.randint(1, K+1, n_tasks)
-        task_crit_levels = [ max(x,1) for x in task_crit_levels ]
+        task_crit_levels_orig = np.random.randint(0, K+1, n_tasks)
+        task_crit_levels = [ max(x,1) for x in task_crit_levels_orig ]
 
         scenarios = gen_tasksets(gen_uunifastdiscard(1, max_util, n_tasks), [periods])
 
@@ -38,13 +38,13 @@ def prepare(id_run, n_tasks, max_util, times, p_fault):
             temp_prob = 1 - (1-temp_prob_job)**(3600000./p) # Failure prob per hour
                         
 
-            n_reexec_tasks_plus_1 = math.ceil(math.log(crit_lvl_prob[task_crit_levels[t_id-1]-1],temp_prob))
+            n_reexec_tasks_plus_1 = math.ceil(math.log(crit_lvl_prob[task_crit_levels_orig[t_id-1]-1],temp_prob))
 
             # WCET, T, N_REEXEC, FAILURE_REQ, FAULT_PROB
             f.write(str(c) + " " + 
                   str(p) + " " +
                   str(n_reexec_tasks_plus_1-1) + " " +
-                  str(crit_lvl_prob[task_crit_levels[t_id-1]-1]) + " " +
+                  str(crit_lvl_prob[task_crit_levels_orig[t_id-1]-1]) + " " +
                   str(temp_prob) + "\n")
 
             t_id += 1
@@ -55,6 +55,8 @@ def prepare(id_run, n_tasks, max_util, times, p_fault):
         (output, err) = process.communicate()
         exit_code = process.wait()
         
+        os.remove(strfilename)
+        
         if exit_code != 0:
             positive_results = positive_results + 1
 
@@ -64,6 +66,8 @@ def compute(n_tasks, max_util, times, my_id, p_fault):
 
     positive_results = prepare(my_id, n_tasks, max_util, times, p_fault)
     
-    
+    if max_util == 1.0:
+        sys.stderr.write("Completed " + str(n_tasks) + "\n")
+
 
     return [n_tasks, max_util, positive_results]

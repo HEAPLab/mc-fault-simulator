@@ -230,8 +230,8 @@ void TreeBuilder::search_feasible_droppings(std::vector<bool> &valids, std::vect
         return a.size() < b.size();
     });
     
-    if(fds.size() > 50) {
-        fds.resize(50);
+    if(fds.size() > 25) {
+        fds.resize(25);
     }
     
     valids.reserve(fds.size());

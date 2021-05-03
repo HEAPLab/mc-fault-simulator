@@ -9,21 +9,18 @@ import queue
 
 np.random.seed(12345)   # This allows us to be 
 
-MIN_TASKS = 1
-MAX_TASKS = 50
+NR_TASKS  = [5, 10, 25, 50] 
 MIN_UTIL  = 1   # In percentage
 MAX_UTIL  = 100 # In percentage
-N_RUNS    = 1000
+N_RUNS    = 1000    
 PARALLEL  = 8
-FAULT_P   = 1e-3
+FAULT_P   = 1e-5
 
 if len(sys.argv) == 3:
-    MIN_TASKS = int(sys.argv[1])
-    MAX_TASKS = int(sys.argv[1])
     MIN_UTIL  = int(sys.argv[2]) # In percentage
     MAX_UTIL  = int(sys.argv[2]) # In percentage
 
-pool = Pool()
+pool = Pool(processes=PARALLEL)
 i = 0
 q = queue.Queue()
 
@@ -33,16 +30,19 @@ def print_q(q):
         output = result.get()
         print(str(output[0]) + " " + str(output[1]) + " " + str(output[2]))
 
-for n_tasks in range (MIN_TASKS, MAX_TASKS+1):
-    sys.stderr.write("Progress: " + str(n_tasks)+"/"+str(MAX_TASKS)+"\n")
+for n_tasks in NR_TASKS:
+    sys.stderr.write("Queing: " + str(n_tasks)+"/"+str(len(NR_TASKS))+"\n")
 
     for max_util in range (MIN_UTIL, MAX_UTIL+1):
-    #    worker = pool.apply_async(experiments_edf_vd.compute, [n_tasks, max_util/100.0, N_RUNS], False)
-    #    worker = pool.apply_async(experiments_none.compute, [n_tasks, max_util/100.0, N_RUNS])
-        worker = pool.apply_async(experiments_tree.compute, [n_tasks, max_util/100.0, N_RUNS, i, FAULT_P])
-        q.put(worker)
-        i = i + 1
-        if i % PARALLEL == 0:
-            print_q(q)
+        if max_util % 5 != 0:
+            continue
 
-    print_q(q)
+        worker = pool.apply_async(experiments_edf_vd.compute, [n_tasks, max_util/100.0, N_RUNS, FAULT_P, True, False])
+    #    worker = pool.apply_async(experiments_none.compute, [n_tasks, max_util/100.0, N_RUNS])
+    
+    #    worker = pool.apply_async(experiments_tree.compute, [n_tasks, max_util/100.0, N_RUNS, i, FAULT_P])
+        q.put(worker)
+
+        i = i + 1
+
+print_q(q)
