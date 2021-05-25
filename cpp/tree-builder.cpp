@@ -229,7 +229,7 @@ void TreeBuilder::search_feasible_droppings(std::vector<bool> &valids, std::vect
     std::sort(fds.begin(), fds.end(), [](std::vector<const Task*> a, std::vector<const Task*> b) {
         return a.size() < b.size();
     });
-    
+
     if(fds.size() > 25) {
         fds.resize(25);
     }

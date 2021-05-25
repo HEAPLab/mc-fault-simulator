@@ -19,7 +19,7 @@ def prepare(id_run, n_tasks, max_util, times, p_fault):
     for i in range(0, times):
         periods  = np.random.randint(50, 1000, n_tasks);
         K = 3   # Number of crit_levels
-        crit_lvl_prob = [1e-3, 1e-7, 1e-9]
+        crit_lvl_prob = [1e-3, 1e-5, 1e-7, 1e-9]
         perc_WCET = [1, 2, 3]
 
         task_crit_levels_orig = np.random.randint(0, K+1, n_tasks)
@@ -27,7 +27,7 @@ def prepare(id_run, n_tasks, max_util, times, p_fault):
 
         scenarios = gen_tasksets(gen_uunifastdiscard(1, max_util, n_tasks), [periods])
 
-        strfilename = "/tmp/input_" + str(id_run) + "_" + str(i) + ".txt"
+        strfilename = "/tmp/sec_input_" + str(id_run) + "_" + str(i) + ".txt"
         
         f = open(strfilename, "w")
         

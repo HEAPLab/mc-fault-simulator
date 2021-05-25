@@ -24,7 +24,8 @@ def compute(n_tasks, max_util, times, p_fault, consider_faults, faults_only):
         crit_lvl_prob = [1e-3, 1e-5, 1e-7, 1e-9]  # DAL D, B, A
 #        task_crit_levels = np.random.randint(1,K+1, n_tasks)
         task_crit_levels_orig = np.random.randint(0,K+1, n_tasks)
-        task_crit_levels = [ max(x,1) for x in task_crit_levels_orig ]
+#        task_crit_levels = [ min(max(x,1), 2) for x in task_crit_levels_orig ]
+        task_crit_levels = [ 2 if x==0 else x for x in task_crit_levels_orig ]
 
 #        task_crit_levels = [ 2 if x==4 else max(x,1) for x in task_crit_levels ]
         U = []
