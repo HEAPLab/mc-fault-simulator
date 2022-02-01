@@ -1,49 +1,94 @@
 # Main simulator file
-import sys
-import experiments_none
-import experiments_edf_vd
-import experiments_tree
+import sys, os
+from pathlib import Path
+from main_scripts import experiments_none
+from main_scripts import experiments_edf_vd
+from main_scripts import experiments_tree
 import numpy as np
 from multiprocessing import Pool
 import queue
 
-np.random.seed(12345)   # This allows us to be 
+total_done = 0
+current_outfile = ""
+current_outfile_handler = None
 
-NR_TASKS  = [5, 10, 25, 50] 
-MIN_UTIL  = 1   # In percentage
-MAX_UTIL  = 100 # In percentage
-N_RUNS    = 10
-PARALLEL  = 8
-FAULT_P   = 1e-3
-
-if len(sys.argv) == 3:
-    MIN_UTIL  = int(sys.argv[2]) # In percentage
-    MAX_UTIL  = int(sys.argv[2]) # In percentage
-
-pool = Pool(processes=PARALLEL)
-i = 0
-q = queue.Queue()
-
-def print_q(q):
+def print_q(q, n_steps):
+    global total_done, current_outfile
     while not q.empty():
         result = q.get()
         output = result.get()
-        print(str(output[0]) + " " + str(output[1]) + " " + str(output[2]))
-        sys.stdout.flush()
+        current_outfile_handler.write(str(output[0]) + " " + str(output[1]) + " " + str(output[2]) + "\n")
+        
+        total_done = total_done + 1
 
-for n_tasks in NR_TASKS:
-    sys.stderr.write("Queing: " + str(n_tasks)+"/"+str(len(NR_TASKS))+"\n")
+        printProgressBar(total_done, n_steps, prefix = 'Progress:', suffix = 'Complete', length = 50)
 
-    for max_util in range (MIN_UTIL, MAX_UTIL+1):
-        if max_util % 5 != 0:
-            continue
 
-    #    worker = pool.apply_async(experiments_edf_vd.compute, [n_tasks, max_util/100.0, N_RUNS, FAULT_P, True, False])
-        worker = pool.apply_async(experiments_none.compute, [n_tasks, max_util/100.0, N_RUNS])
-    
-    #    worker = pool.apply_async(experiments_tree.compute, [n_tasks, max_util/100.0, N_RUNS, i, FAULT_P])
-        q.put(worker)
+def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
+	"""
+	Call in a loop to create terminal progress bar
+	@params:
+	iteration   - Required  : current iteration (Int)
+	total       - Required  : total iterations (Int)
+	prefix      - Optional  : prefix string (Str)
+	suffix      - Optional  : suffix string (Str)
+	decimals    - Optional  : positive number of decimals in percent complete (Int)
+	length      - Optional  : character length of bar (Int)
+	fill        - Optional  : bar fill character (Str)
+	printEnd    - Optional  : end character (e.g. "\r", "\r\n") (Str)
+	"""
+	percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
+	filledLength = int(length * iteration // total)
+	bar = fill * filledLength + '-' * (length - filledLength)
+	print(f'\r{prefix} |{bar}| {percent}% {suffix}', end = printEnd)
+	# Print New Line on Complete
+	if iteration == total: 
+		print()
 
-        i = i + 1
+def prepare_output(kind, p):
+	global current_outfile, current_outfile_handler
+	Path("results").mkdir(parents=True, exist_ok=True)
+	name = "results_"
+	if kind == 1:
+		name = name + "edf"
+	elif kind == 2:
+		name = name + "edf_vd"
+	elif kind == 3:
+		name = name + "tree"
+	current_outfile = "results/" + name + "_" + '{:.0e}'.format(p) + ".txt"
 
-print_q(q)
+	if current_outfile_handler != None:
+		current_outfile_handler.close()
+	current_outfile_handler = open(current_outfile, "w")
+
+def run_sim(kind, seed, n_tasks_array, min_util, max_util, n_runs, parallel, fault_p_array):
+	global total_done
+	pool = Pool(processes=parallel)
+	for fault_p in fault_p_array:
+		prepare_output(kind, fault_p)
+		i = 0
+		total_done = 0
+		q = queue.Queue()
+		np.random.seed(seed) 
+		print("\nRunning for failure probability: " + '{:.0e}'.format(fault_p))
+		n_steps = len(n_tasks_array)*len(range (min_util, max_util+1))/5
+		printProgressBar(0, n_steps, prefix = 'Progress:', suffix = 'Complete', length = 50)
+		for n_tasks in n_tasks_array:
+			for mu in range (min_util, max_util+1):
+				if mu % 5 != 0:
+					continue
+
+				if kind == 1:
+					worker = pool.apply_async(experiments_none.compute, [n_tasks, mu/100.0, n_runs])
+				elif kind == 2:
+					worker = pool.apply_async(experiments_edf_vd.compute, [n_tasks, mu/100.0, n_runs, fault_p, True, False])
+				elif kind == 3:
+					worker = pool.apply_async(experiments_tree.compute, [n_tasks, mu/100.0, n_runs, i, fault_p])
+				q.put(worker)
+
+				i = i + 1
+
+		print_q(q, n_steps)
+
+
+

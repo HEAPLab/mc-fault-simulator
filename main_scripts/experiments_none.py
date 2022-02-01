@@ -1,4 +1,4 @@
-from task_generator import *
+from main_scripts.task_generator import *
 import numpy as np
 
 

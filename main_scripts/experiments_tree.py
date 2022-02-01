@@ -1,4 +1,4 @@
-from task_generator import *
+from main_scripts.task_generator import *
 import numpy as np
 import math, os, sys
 from subprocess import Popen, PIPE
@@ -66,8 +66,5 @@ def compute(n_tasks, max_util, times, my_id, p_fault):
 
     positive_results = prepare(my_id, n_tasks, max_util, times, p_fault)
     
-    if max_util == 1.0:
-        sys.stderr.write("Completed " + str(n_tasks) + "\n")
-
 
     return [n_tasks, max_util, positive_results]

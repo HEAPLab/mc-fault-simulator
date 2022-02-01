@@ -1,5 +1,5 @@
-from task_generator import *
-from mc_sched import *
+from main_scripts.task_generator import *
+from main_scripts.mc_sched import *
 import numpy as np
 import sys
 

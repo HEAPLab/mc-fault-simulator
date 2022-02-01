@@ -11,11 +11,11 @@ CPP = g++
 $(OUT): $(OBJ)
 	@printf "Linking %s...\n" $@
 	@printf "Done!\n"
-	@$(CPP) $^ -o $@
+	@$(CPP) -O3 -march=native $^ -o $@
 
 %.o: %.cpp
 	@printf "Compiling %s...\n" $@
-	@$(CPP) -c $< -o $@
+	@$(CPP) -O3 -march=native -c $< -o $@
 
 clean:
 	@rm -f $(OUT) $(OBJ)
