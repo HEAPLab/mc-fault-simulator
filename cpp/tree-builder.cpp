@@ -14,7 +14,7 @@ TreeBuilder::TreeBuilder( const std::vector<const Task*>* base_taskset,
         for (int i=0; i < bt->how_many_reexec+1; i++) {
             rates.push_back(bt->fault_rate);
         }
-        fault_rate_real.push_back(rates);
+        fault_rate_real.push_back(std::move(rates));
     }
      
     
@@ -244,6 +244,7 @@ void TreeBuilder::search_feasible_droppings(std::vector<bool> &valids, std::vect
         for(const auto &t : f) {
            if(! verify_feasibility(t)) {
                 ok=false;
+                break;
            }
         } 
         

@@ -4,9 +4,6 @@ import math, os, sys
 from subprocess import Popen, PIPE
 import concurrent.futures
 
-np.random.seed(12345)
-
-
 def prepare(id_run, n_tasks, max_util, times, p_fault):
 
     # Commpute the fault probability

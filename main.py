@@ -6,7 +6,8 @@ yes = {'yes','y', 'ye', ''}
 no = {'no','n'}
 
 # Internal configuration
-NR_TASKS  = [5, 10, 25, 50] 
+# NR_TASKS  = [5, 10, 25, 50] 
+NR_TASKS  = [5] 
 MIN_UTIL  = 1   # In percentage
 MAX_UTIL  = 100 # In percentage
 FAULT_P   = [1e-3, 1e-4, 1e-5]
