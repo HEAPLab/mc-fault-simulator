@@ -30,7 +30,10 @@ void Path::print() const {
 	}
 }
 
-
+/**
+ * Get the utilization U(l,k). You must call compute_tasks_utilization() before invoking this
+ * function.
+ */
 float Path::get_utilization(uint_fast8_t l, uint_fast8_t k) const noexcept {
     assert(this->util_is_ready);
     
@@ -44,7 +47,9 @@ float Path::get_utilization(uint_fast8_t l, uint_fast8_t k) const noexcept {
     return U;
 }
 
-
+/**
+ * Compute the utilization matrix. Use get_utilization(l,k) to access the data.
+ */
 void Path::compute_tasks_utilization() noexcept {
 
 	if(this->util_is_ready) {
@@ -105,7 +110,9 @@ void Path::compute_tasks_utilization() noexcept {
     
 }
 
-
+/**
+ * Return if the current path is schedulable or not. It uses the EDF-VD algorithm. 
+ */
 bool Path::is_schedulable() const noexcept {
 
     int n_levels = lbl_arcs_len+1;
@@ -180,6 +187,10 @@ bool Path::is_schedulable() const noexcept {
     return false;
 }
 
+/**
+ * Return the list of tasks that can be still dropped at the end of the path, i.e., the task not yet
+ * dropped and not yet failed or activated due to failure. 
+ */
 void Path::get_droppables(task_bool_t &to_ret) const noexcept {
 
 	for (auto i=0; i<base_taskset.size(); i++) {

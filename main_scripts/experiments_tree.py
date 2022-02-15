@@ -7,8 +7,8 @@ import concurrent.futures
 def prepare(id_run, n_tasks, max_util, times, p_fault):
 
     # Commpute the fault probability
-    p_faults = p_fault # SET HERE
-    p_faults_per_ms = 1-(1-p_faults)**(1./3600000.)
+    p_faults = p_fault
+    p_faults_per_ms = 1-(1-p_faults)**(1./3600000.)	# Scale down to fault per ms
 
     positive_results = 0
     negative_results = 0
@@ -48,7 +48,7 @@ def prepare(id_run, n_tasks, max_util, times, p_fault):
 
         f.close()
         
-        process = Popen(["./cpp_opt/verify", strfilename], stdout=PIPE)
+        process = Popen(["./cpp_opt/verify"+str(n_tasks), strfilename], stdout=PIPE)
         (output, err) = process.communicate()
         exit_code = process.wait()
         

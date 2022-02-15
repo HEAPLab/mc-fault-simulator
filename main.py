@@ -6,8 +6,7 @@ yes = {'yes','y', 'ye', ''}
 no = {'no','n'}
 
 # Internal configuration
-# NR_TASKS  = [5, 10, 25, 50] 
-NR_TASKS  = [5] 
+NR_TASKS  = [5, 10, 25, 50] 
 MIN_UTIL  = 1   # In percentage
 MAX_UTIL  = 100 # In percentage
 FAULT_P   = [1e-3, 1e-4, 1e-5]
@@ -54,8 +53,8 @@ while True:
 	elif choice in yes:
 		break
 
-print("I'm executing `make` inside `cpp` directory...")
-os.chdir("cpp")
+print("I'm executing `make` inside `cpp_opt` directory...")
+os.chdir("cpp_opt")
 ret = subprocess.call("make")
 os.chdir("..")
 
@@ -118,15 +117,19 @@ while True:
 
 while True:
 	print(f"{bcolors.WARNING}Do you want to run the TREE simulation? (Y/N) {bcolors.ENDC}", end='')
+	print(f"{bcolors.WARNING} - If you skip this, you can use pre-computed results {bcolors.ENDC}", end='')
 	choice = input().lower()
 	if choice in no:
 		break
 	elif choice in yes:
-		print(f"\n{bcolors.OKCYAN}The TREE may take long time to complete (each taskset may require from a few")
-		print(f"milliseconds to several minutes). Also, the following progress bars are non-linear")
-		print(f"and usually slower in the range 20-40%.{bcolors.ENDC}")
-		experiments.run_sim(3, SEED, NR_TASKS, MIN_UTIL, MAX_UTIL, NR_TASKSETS, NR_THREADS, FAULT_P)
-		print(f"{bcolors.OKGREEN}Success!{bcolors.ENDC}\n")
-		break
+		print(f"{bcolors.FAIL} WARNING: Depending on your machine this may take HOURS or DAYS, are you sure? (Y/N) {bcolors.ENDC}", end='')
+		choice = input().lower()
+		if choice in yes:
+			print(f"\n{bcolors.OKCYAN}The TREE may take long time to complete (each taskset may require from a few")
+			print(f"milliseconds to several minutes). Also, the following progress bars are non-linear")
+			print(f"and usually slower in the range 20-40%.{bcolors.ENDC}")
+			experiments.run_sim(3, SEED, NR_TASKS, MIN_UTIL, MAX_UTIL, NR_TASKSETS, NR_THREADS, FAULT_P)
+			print(f"{bcolors.OKGREEN}Success!{bcolors.ENDC}\n")
+			break
 
 

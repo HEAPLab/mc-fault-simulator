@@ -3,23 +3,35 @@
 
 SRC = $(wildcard *.cpp)
 OBJ = ${SRC:.cpp=.o}
-OUT = verify
 
 # Fallback to gcc if clang not available
 CPP = g++
 
-OPT=-O3
+OPT=-O3 -DNDEBUG
 #OPT=-O0 -g -fsanitize=bounds -fsanitize=address -fsanitize=undefined
 
-$(OUT): $(OBJ)
-	@printf "Linking %s...\n" $@
-	@printf "Done!\n"
-	@$(CPP) --std=c++17 $(OPT) -march=native $^ -o $@
+all: verify5 verify10 verify25 verify50
 
-%.o: %.cpp
-	@printf "Compiling %s...\n" $@
-	@$(CPP) --std=c++17 $(OPT) -march=native -c $< -o $@
+verify5: $(SRC)
+	@printf "Compiling 1/4...\n"
+	@$(CPP) --std=c++17 $(OPT) -march=native -DNR_TASKS=5 $(SRC) -o verify5
+	@printf "  verify5: done!\n"
+
+verify10: $(SRC)
+	@printf "Compiling 2/4...\n"
+	@$(CPP) --std=c++17 $(OPT) -march=native -DNR_TASKS=10 $(SRC) -o verify10
+	@printf "  verify10: done!\n"
+
+verify25: $(SRC)
+	@printf "Compiling 3/4...\n"
+	@$(CPP) --std=c++17 $(OPT) -march=native -DNR_TASKS=25 $(SRC) -o verify25
+	@printf "  verify25: done!\n"
+
+verify50: $(SRC)
+	@printf "Compiling 4/4...\n"
+	@$(CPP) --std=c++17 $(OPT) -march=native -DNR_TASKS=50 $(SRC) -o verify50
+	@printf "  verify50: done!\n"
 
 clean:
-	@rm -f $(OUT) $(OBJ)
+	@rm -f verify5 verify10 verify25 verify50 $(OBJ)
 	@printf "All clear!\n"

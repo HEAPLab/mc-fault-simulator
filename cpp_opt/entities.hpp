@@ -6,7 +6,10 @@
 #include <cstdint>
 #include <array>
 
-#define NR_TASKS 5
+#ifndef NR_TASKS
+	#error "NR_TASKS not defined"
+#endif
+
 #define MAX_REEXEC 5
 
 class Task {
@@ -37,7 +40,7 @@ private:
 
 
 typedef std::array<std::array<Task, MAX_REEXEC>, NR_TASKS> task_array_t; // [i][0] is always valid
-typedef std::array<std::array<bool, NR_TASKS>, MAX_REEXEC> task_bool_t;
+typedef std::array<std::array<bool, MAX_REEXEC>, NR_TASKS> task_bool_t;
 
 class Path {
 

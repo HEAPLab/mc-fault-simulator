@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <iostream>
 
-#define PWR_LIMIT 200
+#define PWR_LIMIT 50
 
 bool TreeBuilder::next_level(const Path &path, const task_bool_t &activables) noexcept {
 	//std::cout << "TreeBuilder::next_level " << current_level << " " << path.get_leaf_probability() << std::endl;

@@ -7,7 +7,7 @@
 #define LIMIT_PROB_EVENTS 1e-12
 
 
-typedef std::array<std::array<float, NR_TASKS>, MAX_REEXEC>  fault_rate_t;
+typedef std::array<std::array<float, MAX_REEXEC>, NR_TASKS>  fault_rate_t;
 
 class TreeBuilder {
 public:
