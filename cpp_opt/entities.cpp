@@ -46,13 +46,10 @@ float Path::get_utilization(uint_fast8_t l, uint_fast8_t k) const noexcept {
 
 
 void Path::compute_tasks_utilization() noexcept {
-	std::cout << "Path::compute_tasks_utilization()" << std::endl;
 
 	if(this->util_is_ready) {
 		return;
 	}
-
-	std::cout << "Path::compute_tasks_utilization() - NEW" << std::endl;
 
 	// Compute the basic utilization without re-execution
     for (const auto &t : base_taskset) {
@@ -61,7 +58,7 @@ void Path::compute_tasks_utilization() noexcept {
         uL_U[t[0].id][1] = t[0].U;
         uL_U_len[t[0].id] = 2;
         
-        std::cout << "uL_U " << (int)t[0].id << " " << t[0].U << std::endl;
+        //std::cout << "uL_U " << (int)t[0].id << " " << t[0].U << std::endl;
     }
     
     // Now we have to check which task is dropped and which not
@@ -75,7 +72,7 @@ void Path::compute_tasks_utilization() noexcept {
     	uL_L[switch_task_id]++;
     	uL_U[switch_task_id][uL_U_len[switch_task_id]++] = uL_U[switch_task_id][l] + uL_U[switch_task_id][1];
 
-        std::cout << "uL_U[switch_task_id][uL_U_len[switch_task_id]++] " << (int)switch_task_id << " " << (int)uL_U_len[switch_task_id]-1 << std::endl;
+        //std::cout << "uL_U[switch_task_id][uL_U_len[switch_task_id]++] " << (int)switch_task_id << " " << (int)uL_U_len[switch_task_id]-1 << std::endl;
 
     	for (const auto &t : base_taskset) {	// Now let's check the others if they have to run or not
     		auto t_id = t[0].id;
@@ -98,7 +95,7 @@ void Path::compute_tasks_utilization() noexcept {
 			// Otherwise the task is still active and must be counted in the utilization
 			uL_L[t_id]++;
 			uL_U[t_id][uL_U_len[t_id]++] = uL_U[t_id][l];    
-        	std::cout << "uL_U[t_id][uL_U_len[t_id]++]" << (int)t_id << " " << (int)uL_U_len[t_id]-1 << std::endl;	
+        	//std::cout << "uL_U[t_id][uL_U_len[t_id]++]" << (int)t_id << " " << (int)uL_U_len[t_id]-1 << std::endl;	
     	}
     	
     	

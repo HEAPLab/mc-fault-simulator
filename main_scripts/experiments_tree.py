@@ -48,7 +48,7 @@ def prepare(id_run, n_tasks, max_util, times, p_fault):
 
         f.close()
         
-        process = Popen(["./cpp/verify", strfilename], stdout=PIPE)
+        process = Popen(["./cpp_opt/verify", strfilename], stdout=PIPE)
         (output, err) = process.communicate()
         exit_code = process.wait()
         
@@ -56,7 +56,7 @@ def prepare(id_run, n_tasks, max_util, times, p_fault):
         
         if exit_code != 0:
             positive_results = positive_results + 1
-
+		
     return positive_results
 
 def compute(n_tasks, max_util, times, my_id, p_fault):

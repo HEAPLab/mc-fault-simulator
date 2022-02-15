@@ -3,17 +3,16 @@
 #include <algorithm>
 #include <iostream>
 
-#define PWR_LIMIT 25
+#define PWR_LIMIT 200
 
 bool TreeBuilder::next_level(const Path &path, const task_bool_t &activables) noexcept {
-	std::cout << "TreeBuilder::next_level" << std::endl;
+	//std::cout << "TreeBuilder::next_level " << current_level << " " << path.get_leaf_probability() << std::endl;
     current_level++;
-	path.print();
     
 
     if (path.get_leaf_probability() < LIMIT_PROB_EVENTS) {
-    	std::cout << "LEAF LIMIT" << std::endl;
-	    path.print();
+    	//std::cout << "LEAF LIMIT" << std::endl;
+    	current_level--;
         return true;    // Success
     }
 
@@ -21,7 +20,7 @@ bool TreeBuilder::next_level(const Path &path, const task_bool_t &activables) no
 		bool prev_not_exists = true;
 
 		for (auto j=1; j<base_taskset[i][0].how_many_reexec+1; j++) {
-			std::cout << i << " " << j << " ACT? " << activables[i][j] << std::endl; 
+			//std::cout << i << " " << j << " ACT? " << activables[i][j] << std::endl; 
 			if (!activables[i][j]) {
 				prev_not_exists = true;
 				continue;
@@ -48,12 +47,15 @@ bool TreeBuilder::next_level(const Path &path, const task_bool_t &activables) no
 }
 
 bool TreeBuilder::build_node(const Path &path, const Task &t, const task_bool_t &activables) noexcept {
-	std::cout << "TreeBuilder::build_node" << std::endl;
+	//std::cout << "TreeBuilder::build_node" << std::endl;
 
 	Path new_path(path);
-	path.print();
+	
 
 	auto new_node = new_path.new_node(&t);
+
+	//std::cout << " old path prob " << path.get_leaf_probability() << " new path prob " << new_path.get_leaf_probability() << std::endl;
+
 	
 	task_bool_t new_activables = activables;
 	new_activables[t.id][t.reexec_id] = false;
@@ -62,8 +64,7 @@ bool TreeBuilder::build_node(const Path &path, const Task &t, const task_bool_t 
 	if(new_path.is_schedulable()) {
 		if(this->next_level(new_path, new_activables)) {
             // No dropping necessary simple schedulability
-            std::cout << "simple schedulability" << std::endl;
-            new_path.print();
+            //std::cout << "Simple schedulability" << std::endl;
             return true;
         }
 	}
@@ -217,5 +218,22 @@ void TreeBuilder::powerset(std::set<std::set<const Task*>> &fds, const std::unor
 	}
 	
 	fds.merge(fds_2nd);
+	
+	std::set<std::set<const Task*>> fds_3rd;
+	
+	for (const auto d : droppable) {
+		for (const auto fd : fds_2nd) {
+			if (i >= PWR_LIMIT) break;
+			
+			if(fd.find(d) == fd.end()) {
+				fds_3rd.insert(std::set<const Task*>{d, *fd.begin(), *std::next(fd.begin())}); 
+				i++;
+			}
+			
+		}
+		if (i >= PWR_LIMIT) break;	
+	}
+	
+	fds.merge(fds_3rd);
 }
 

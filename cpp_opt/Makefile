@@ -8,8 +8,8 @@ OUT = verify
 # Fallback to gcc if clang not available
 CPP = g++
 
-#OPT=-O3
-OPT=-O0 -g -fsanitize=bounds -fsanitize=address -fsanitize=undefined
+OPT=-O3
+#OPT=-O0 -g -fsanitize=bounds -fsanitize=address -fsanitize=undefined
 
 $(OUT): $(OBJ)
 	@printf "Linking %s...\n" $@
