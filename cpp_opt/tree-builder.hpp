@@ -24,13 +24,16 @@ public:
     
 private:
 	const task_array_t & base_taskset;
-    uint_fast16_t current_level;
+
+#ifdef ENABLE_DEBUG
+    uint_fast16_t current_level;    // Used for debug messages only
+#endif
 
 	void do_update_probability(const Task* t, float new_p_tot) noexcept;
 	void restore_probability(const Task* t, const fault_rate_t &saved_fault_rate_real) noexcept;
 	void search_feasible_droppings(std::set<std::set<const Task*>> &fds, const Path &path, const fault_rate_t &saved_fault_rate_real) noexcept;
     fault_rate_t fault_rate_real;
-    void powerset(std::set<std::set<const Task*>> &fds, const std::unordered_set<const Task*> droppable) noexcept;
+    void powerset(std::set<std::set<const Task*>> &fds, const std::unordered_set<const Task*> &droppable) noexcept;
     bool verify_feasibility(const Task* t) const noexcept;
 };
 

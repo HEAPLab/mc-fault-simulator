@@ -49,6 +49,19 @@ public:
     Path(const task_array_t &base_taskset) : base_taskset(base_taskset) {
 
     }
+    
+    Path(const Path &p) : base_taskset(p.base_taskset),
+                         util_is_ready(false),
+                         leaf_probability(p.leaf_probability),
+                         lbl_arcs(p.lbl_arcs),
+                         lbl_arcs_len(p.lbl_arcs_len),
+                         nodes_labels(p.nodes_labels),
+                         nodes_labels_len(p.nodes_labels_len)
+    {
+        // We define a new copy costructor because we don't need to copy some variables
+        // so we can save some execution time
+        
+    }
 
 	float get_leaf_probability() const noexcept {
 		return leaf_probability;

@@ -18,7 +18,7 @@ def print_q(q, n_steps):
         result = q.get()
         output = result.get()
         current_outfile_handler.write(str(output[0]) + " " + str(output[1]) + " " + str(output[2]) + "\n")
-        
+        current_outfile_handler.flush()
         total_done = total_done + 1
 
         printProgressBar(total_done, n_steps, prefix = 'Progress:', suffix = 'Complete', length = 50)
@@ -69,8 +69,9 @@ def run_sim(kind, seed, n_tasks_array, min_util, max_util, n_runs, parallel, fau
 		i = 0
 		total_done = 0
 		q = queue.Queue()
-		np.random.seed(seed) 
-		print("\nRunning for failure probability: " + '{:.0e}'.format(fault_p))
+		np.random.seed(seed)
+		if kind != 1:
+			print("\nRunning for failure probability: " + '{:.0e}'.format(fault_p))
 		n_steps = len(n_tasks_array)*len(range (min_util, max_util+1))/5
 		printProgressBar(0, n_steps, prefix = 'Progress:', suffix = 'Complete', length = 50)
 		for n_tasks in n_tasks_array:
@@ -89,6 +90,8 @@ def run_sim(kind, seed, n_tasks_array, min_util, max_util, n_runs, parallel, fau
 				i = i + 1
 
 		print_q(q, n_steps)
-
+		if kind == 1:	# Only 1 execution in case of EDF as the fault probability has no effect
+			break
+			
 
 

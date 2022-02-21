@@ -1,7 +1,7 @@
 #!/bin/bash
 
-N_RUNS=1000
+N_RUNS=$2
 N_TESTS=80
 SUM=`cat $1 | cut -d' ' -f3 | awk '{s+=$1}END{print s}'`
 
-echo "$SUM / ( $N_TESTS * $N_RUNS ) * 100" | bc -l
+echo "scale=2; $SUM * 100 / ( $N_TESTS * $N_RUNS ) " | bc -l | tr -d '\n'

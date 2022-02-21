@@ -8,7 +8,7 @@ OBJ = ${SRC:.cpp=.o}
 CPP = g++
 
 OPT=-O3 -DNDEBUG
-#OPT=-O0 -g -fsanitize=bounds -fsanitize=address -fsanitize=undefined
+#OPT=-O0 -g -fsanitize=bounds -fsanitize=address -fsanitize=undefined -pg -DENABLE_DEBUG
 
 all: verify5 verify10 verify25 verify50
 

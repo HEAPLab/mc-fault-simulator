@@ -7,7 +7,6 @@ from main_scripts.mc_sched import *
 import numpy as np
 import sys
 
-np.random.seed(12345)
 
 def compute(n_tasks, max_util, times, p_fault, consider_faults, faults_only):
 

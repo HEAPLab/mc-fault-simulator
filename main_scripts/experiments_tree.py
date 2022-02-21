@@ -33,12 +33,12 @@ def prepare(id_run, n_tasks, max_util, times, p_fault):
         for (c,p) in scenarios[0]:
             temp_prob_job = 1-(1-p_faults_per_ms)**p    # Failure prob per job
             temp_prob = 1 - (1-temp_prob_job)**(3600000./p) # Failure prob per hour
-                        
+
 
             n_reexec_tasks_plus_1 = math.ceil(math.log(crit_lvl_prob[task_crit_levels_orig[t_id-1]-1],temp_prob))
 
             # WCET, T, N_REEXEC, FAILURE_REQ, FAULT_PROB
-            f.write(str(c) + " " + 
+            f.write(str(c) + " " +
                   str(p) + " " +
                   str(n_reexec_tasks_plus_1-1) + " " +
                   str(crit_lvl_prob[task_crit_levels_orig[t_id-1]-1]) + " " +
@@ -49,6 +49,7 @@ def prepare(id_run, n_tasks, max_util, times, p_fault):
         f.close()
         
         process = Popen(["./cpp_opt/verify"+str(n_tasks), strfilename], stdout=PIPE)
+#        process = Popen(["./cpp/verify", strfilename], stdout=PIPE)
         (output, err) = process.communicate()
         exit_code = process.wait()
         
